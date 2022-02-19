@@ -1,9 +1,14 @@
 'use strict';
 // check TURF geo
+const path = require('path');
 const colors = require('colors/safe');
 const { FoodPresentation, FoodRequestPresentation, FoodDelivery, Food} = require('./base.js');
 const fs = require('fs');
 const process = require("./DeliveryProcess.js");
+const quote = require("./custom/quote.js");
+const presentation = require("./custom/presentation.js");
+
+const directory = 'c:/TEMP/QW_2022-20220212T185609Z-001';
 const filename = 'C:/TEMP/ABANCAY1_APURIMAC3_APURIMAC_P1.xlsx'
 //const filename = 'C:/TEMP/AMARILIS2_HUANUCO1_HUANUCO_P1.xlsx'
 const streamfilename = 'C:/TEMP/ABANCAY1_APURIMAC3_APURIMAC_P1.json'
@@ -11,127 +16,6 @@ const streamfilename = 'C:/TEMP/ABANCAY1_APURIMAC3_APURIMAC_P1.json'
 //const stream = fs.createWriteStream(streamfilename, {flags: 'w'});
 
 //stream.write('year, territorial unit, committee, item, product, presentation, unit, volumen\n');
-
-function customDeliveryPresentation(foodpresentationarray) {
-   // presentation
-   var arrozp1 = new FoodPresentation();
-   arrozp1.name = 'ARROZ';
-   arrozp1.presentation = 0.5;
-   arrozp1.presentationName = 'ARROZ VALESKA (0.5)';
-   arrozp1.default = false;
-   foodpresentationarray.push(arrozp1);
-  
-   var arrozp2 = new FoodPresentation();
-   arrozp2.name = 'ARROZ';
-   arrozp2.presentation = 0.25;
-   arrozp2.presentationName = 'ARROZ JOAQUIN (0.25)';
-   arrozp2.default = false;
-   foodpresentationarray.push(arrozp2);
-   
-   var arrozp3 = new FoodPresentation();
-   arrozp3.name = 'ARROZ FORTIFICADO';
-   arrozp3.presentation = 0.5;
-   arrozp3.presentationName = 'ARROZ VALESKA FORTIFICADO (0.5)';
-   arrozp3.default = false;
-   foodpresentationarray.push(arrozp3);
-
-   var lechep2 = new FoodPresentation();
-   lechep2.name = 'LECHE EVAPORADA ENTERA';
-   lechep2.presentation = 0.8;
-   lechep2.presentationName = 'La Vaca Lola';
-   lechep2.default = false;
-   foodpresentationarray.push(lechep2);
-}
-
-function requestQuote(foodpresentationarray) {
-  // ACEITE VEGETAL
-  var food = new FoodRequestPresentation();
-  food.name = 'ACEITE VEGETAL';
-  food.presentation = 1;
-  food.ceil = true;
-  food.presentationName = '1 L';
-  foodpresentationarray.push(food);
-  // FIDEOS
-  food = new FoodRequestPresentation();
-  food.name = 'FIDEOS';
-  food.presentation = 100;
-  food.ceil = true;
-  food.presentationName = '100 Kg';
-  foodpresentationarray.push(food);
-  // ARROZ
-  food = new FoodRequestPresentation();
-  food.name = 'ARROZ';
-  food.presentation = 100;
-  food.ceil = true;
-  food.presentationName = '100 Kg';
-  foodpresentationarray.push(food);
-  // ARROZ FORTIFICADO
-  food = new FoodRequestPresentation();
-  food.name = 'ARROZ FORTIFICADO';
-  food.presentation = 100;
-  food.ceil = true;
-  food.presentationName = '100 Kg';
-  foodpresentationarray.push(food);
-  // AZUCAR RUBIA
-  food = new FoodRequestPresentation();
-  food.name = 'AZUCAR RUBIA';
-  food.presentation = 50;
-  food.ceil = true;
-  food.presentationName = '50 Kg';
-  foodpresentationarray.push(food);
-  // CONSERVA DE BOFE DE RES
-  food = new FoodRequestPresentation();
-  food.name = 'CONSERVA DE BOFE DE RES';
-  food.quantity = 48;
-  food.ceil = true;
-  food.presentation = 0.17;
-  food.presentationName = 'CAJA DE 48 x 0.17 Kg';
-  foodpresentationarray.push(food);
-  // CONSERVA DE CARNE DE POLLO O GALLINA
-  food = new FoodRequestPresentation();
-  food.name = 'CONSERVA DE CARNE DE POLLO O GALLINA';
-  food.ceil = true;
-  food.presentation = 0.17;
-  food.presentationName = 'CAJA DE 48 x 0.17 Kg';
-  foodpresentationarray.push(food);
-  // CONSERVA DE PESCADO EN ACEITE VEGETAL
-  food = new FoodRequestPresentation();
-  food.name = 'CONSERVA DE PESCADO EN ACEITE VEGETAL';
-  food.presentation = 0.17;
-  food.quantity = 20;
-  food.ceil = true;
-  food.presentationName = 'CONSERVA 0.17 Kg';
-  foodpresentationarray.push(food);
-  // HARINA EXTRUIDA DE QUINUA
-  food = new FoodRequestPresentation();
-  food.name = 'HARINA EXTRUIDA DE QUINUA';
-  food.presentation = 1;
-  food.ceil = true;
-  food.presentationName = 'HARINA 1 Kg';
-  foodpresentationarray.push(food);
-  // HOJUELAS DE AVENA CON MACA
-  food = new FoodRequestPresentation();
-  food.name = 'HOJUELAS DE AVENA CON MACA';
-  food.presentation = 1;
-  food.ceil = true;
-  food.presentationName = 'AVENA 1 Kg';
-  foodpresentationarray.push(food);
-  // HOJUELAS DE AVENA CON QUINUA
-  food = new FoodRequestPresentation();
-  food.name = 'HOJUELAS DE AVENA CON QUINUA';
-  food.presentation = 1;
-  food.ceil = true;
-  food.presentationName = 'AVENA 1 Kg';
-  foodpresentationarray.push(food);
-  // LECHE EVAPORADA ENTERA
-  food = new FoodRequestPresentation();
-  food.name = 'LECHE EVAPORADA ENTERA';
-  food.quantity = 40;
-  food.presentation = 0.4;
-  food.ceil = true;
-  food.presentationName = 'Caja con 40 latas de 0.4 Kg';
-  foodpresentationarray.push(food);  
-}
 
 function main() {
   
@@ -143,9 +27,63 @@ function main() {
   // 3. Se puede crear la solicitud de cotización con los datos
   // 4. Con la información afinada se crea la orden de compra
 
-  process.perform(filename, 'Detalle', false, function (item) {
-    processItem(item, caretype, delivery, true, true, true, true);
-  });
+  // 0 check 1 perform
+  let operation = 2;
+
+  switch(operation) {
+    case 0:
+      var dirpath = path.join(directory);
+      fs.readdir(dirpath, function (err, files) {
+        //handling error
+        if (err) {
+            return console.log('Unable to scan directory: ' + err);
+        } 
+        //listing all files using forEach
+        //console.log(files);
+        files.forEach(function (file) {
+          let filepath = path.join(directory, file);
+          fs.lstat(filepath, (err, stats) => {
+            if(err)
+              return console.log(err);
+            if(!stats.isFile())
+              return;
+            process.check(filepath, 'Detalle');
+          });
+
+        });
+      });
+    break;
+    case 1:
+      process.perform(filename, 'Detalle', false, function (item) {
+        processItem(item, caretype, delivery, true, true, true, true);
+      });
+    break;
+    case 2:
+      var dirpath = path.join(directory);
+      fs.readdir(dirpath, function (err, files) {
+        if (err) {
+          return console.log('Unable to scan directory: ' + err);
+        } 
+        //files.forEach(function (file) {
+        for(var i = 0; i < files.length; i++)
+        {
+          let filepath = path.join(directory, files[i]);
+          let stats = fs.lstatSync(filepath);
+          if(!stats.isFile())
+            continue;
+          // usecustompresentation : usar los datos llenados manualmente para armar los paquetes
+          // archivo presentation.js
+          // showpackage  : mostrar los paquetes y su contenido de alimentos
+          // showshopping : mostrar la lista de compra para cubrir el requerimiento del item
+          // trabaja con los alimentos especificados en quote.js
+          // showextraquantity : mostrar el detalle adicional de cantidades
+          process.perform(filepath, 'Detalle', false, function (item) {
+            processItem(item, caretype, delivery, true, false, true, false);
+          });
+        };
+      });
+    break;
+  }
 }
 
 function hasRequestPresentation(foodrequestpresentationarray, key) {
@@ -162,9 +100,9 @@ function processItem(item, caretype, delivery, usecustompresentation, showpackag
   item.defaultPresentation(caretype, delivery, foodpresentationarray);
 
   if(usecustompresentation)
-    customDeliveryPresentation(foodpresentationarray);
+    presentation.customPresentation(foodpresentationarray);
 
-  requestQuote(foodrequestpresentationarray);
+  quote.customQuote(foodrequestpresentationarray);
 
   item.performBuildPackage(caretype, delivery, foodpresentationarray).then((result) => {
 

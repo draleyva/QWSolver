@@ -1,5 +1,6 @@
 const lpsolver = require('./LPSolver.js');
 const colors = require('colors/safe');
+const { registerCustomQueryHandler } = require('puppeteer');
 const sha256 = require('js-sha256').sha256
 
 let Coordinate = class {
@@ -183,13 +184,31 @@ let Modular = class {
   async performDelivery(caretype, delivery, foodpresentationarray){
 
     if(!this.careTypeMap.has(caretype))
-      throw new Error('Invalid caretype');
+    {
+      var ctext = '';
+      for (var [key, value] of this.careTypeMap.entries()) {
+        if(ctext.length > 0)
+          ctext = ctext.concat(',');
+          ctext = ctext.concat(key);
+      }
+      var m = `has not contain caretype : ${caretype} [${ctext}]`;
+      throw new Error(m);
+    }
 
     let caretypeitem = this.careTypeMap.get(caretype);
 
     if(!caretypeitem.deliveryMap.has(delivery))
-      throw new Error('Invalid delivery');
-
+    {
+      var dtext = '';
+      for (var [key, value] of caretypeitem.deliveryMap.entries()) {
+        if(dtext.length > 0)
+          dtext = dtext.concat(',');
+        dtext = dtext.concat(key);
+      }
+      var m = `has not contain delivery : ${delivery} [${dtext}]`;
+      throw new Error(m);
+    }
+    
     //console.log(colors.bold('Package content <'+this.code+'> [S:'+this.users+'] for <'+caretype+'> delivery <'+delivery+'>'));
     //console.log('coordinate : '+this.position.coordinate);
     
@@ -350,6 +369,7 @@ let Modular = class {
 let Item = class {
   constructor()
   {
+    this.document = '';
     this.name = '';
     this.modularMap = new Map();
   }
@@ -424,9 +444,20 @@ let Item = class {
 
     for (const [key, value] of this.modularMap.entries()) {
       let modular = value;
+      let modularresult;
 
-      let modularresult = await modular.performDelivery(caretype, delivery, foodpresentationarray);
-      
+      try
+      {
+        modularresult = await modular.performDelivery(caretype, delivery, foodpresentationarray);
+      }
+      catch(error)
+      {
+        //if(modularresult == undefined)
+        //console.log(error);
+        console.log(`<${this.document}> module [${key}] ${error.message}`);
+        continue;
+      }
+
       let hash = modularresult.package.hash();
       
       let packagedetail = null;

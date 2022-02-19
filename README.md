@@ -1,3 +1,15 @@
+Notas
+
+Si se muestra el mensaje similar a 
+
+module [1785112] has not contain caretype : DESAYUNO [DESAYUNO + ALMUERZO]
+
+en la variable 
+
+let caretype = 'DESAYUNO';
+
+Se debe usar el valor que corresponde : DESAYUNO + ALMUERZO
+
 https://github.com/JWally/jsLPSolver
 
 /*
